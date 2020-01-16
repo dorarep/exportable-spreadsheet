@@ -5,14 +5,23 @@
   "author": "dorarep",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "push": "clasp push",
+    "lint": "eslint src/**/*.ts",
+    "fix": "yarn lint --fix"
+  },
   "devDependencies": {
     "@google/clasp": "^2.3.0",
-    "prettier": "^1.19.1",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.1.0"
+    "@types/google-apps-script": "^1.0.9",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "gas-webpack-plugin": "^1.0.2",
+    "prettier": "^1.19.1"
   },
-  "dependencies": {
-    "@types/google-apps-script": "^1.0.9"
-  }
+  "dependencies": {}
 }

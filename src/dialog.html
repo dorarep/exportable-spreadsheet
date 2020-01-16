@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    window.onload = () => JSON.parse(<?= getCsvJson(); ?>).forEach(csvString => downloadCsv('test', csvString));
+
+    const downloadCsv = (fileName, csvString) => {
+      const htmlAnchorElement = document.createElement('a');
+      htmlAnchorElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
+      htmlAnchorElement.target = '_blank';
+      htmlAnchorElement.download = `${fileName}.csv`;
+      htmlAnchorElement.click();
+    }
+  </script>
+</head>
+<body>
+
+</body>
+</html>

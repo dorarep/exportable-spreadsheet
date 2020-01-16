@@ -1,10 +1,23 @@
-const sheets = () => {
-  const sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
-  return {
-    names: () => sheets.map(sheet => sheet.getName())
-  }
+import {sheets, selectTempSheets, convertSheetsToCsv} from "./modules/spreadsheet";
+import {run} from "./modules/util";
+
+const getCsvJson = () => run(
+  sheets(),
+  selectTempSheets,
+  convertSheetsToCsv,
+  JSON.stringify
+);
+
+function onOpen() {
+  SpreadsheetApp.getActiveSpreadsheet().addMenu('出力', [{
+    name : 'CSVで全て出力',
+    functionName : 'downloadSpreadsheet'
+  }]);
 };
 
-function myFunction() {
-  Logger.log(sheets().names());
+function downloadSpreadsheet() {
+  SpreadsheetApp.getUi().showModalDialog(
+    HtmlService.createTemplateFromFile('dialog').evaluate(),
+    'Downloading...'
+  );
 }
