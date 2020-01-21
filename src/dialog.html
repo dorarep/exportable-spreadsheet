@@ -2,6 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-right: 1px solid #8fd2ed;
+    }
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    table td{
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #999;
+    }
+  </style>
   <script>
     (function() {
       const drawDifference = (sheetsDiff) => {
@@ -17,7 +32,7 @@
             const row = document.createElement("tr");
             diff[0].forEach((column, index) => {
               const data = document.createElement("td");
-              const text = diff[1] ? `${column} -> ${diff[1][index]}` : column;
+              const text = diff[1] && column !== diff[1][index] ? `${column} -> ${diff[1][index]}` : column;
               data.appendChild(document.createTextNode(text));
               row.appendChild(data);
             });
@@ -28,6 +43,13 @@
         });
       };
 
+      google.script.run.withSuccessHandler(drawDifference).getDifference();
+    })();
+    window.onload = function() {
+      const button = document.getElementById("download");
+      button.onclick = () => {
+        google.script.run.withSuccessHandler(csvs => csvs.forEach(downloadCsv)).executeGeneration();
+      };
       const downloadCsv = ([fileName, csvString]) => {
         const htmlAnchorElement = document.createElement('a');
         htmlAnchorElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
@@ -35,13 +57,11 @@
         htmlAnchorElement.download = `${fileName}.csv`;
         htmlAnchorElement.click();
       };
-
-      google.script.run.withSuccessHandler(drawDifference).getDifference();
-      // google.script.run.withSuccessHandler(csvs => csvs.forEach(downloadCsv)).executeGeneration();
-    })();
+    }
   </script>
 </head>
 <body>
+  <button id="download">ダウンロード</button>
   <div id="diff"></div>
 </body>
 </html>

@@ -87,8 +87,8 @@ function getDifference() {
 
 function executeGeneration() {
   return run(
-    deleteTempSheets,
-    generateTempSheets,
+    tap(deleteTempSheets),
+    tap(generateTempSheets),
     convertSheetsToCsv
   )(currentSheets());
 }
@@ -103,6 +103,6 @@ function onOpen() {
 function downloadSpreadsheet() {
   SpreadsheetApp.getUi().showModalDialog(
     HtmlService.createTemplateFromFile('dialog').evaluate(),
-    'Downloading...'
+    'CSVで全て出力'
   );
 }
