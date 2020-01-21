@@ -3,18 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <script>
-    window.onload = () => JSON.parse(<?= getCsvJson(); ?>).forEach(csvString => downloadCsv('test', csvString));
+    (function() {
+      const drawDifference = (sheetsDiff) => {
+        console.log(sheetsDiff);
+        const diffElement = document.getElementById("diff");
+        sheetsDiff && sheetsDiff.forEach(rowsDiff => {
+          const tbl = document.createElement("table");
+          const tblBody = document.createElement("tbody");
+          rowsDiff.forEach(diff => {
+            if (!diff) {
+              return;
+            }
+            const row = document.createElement("tr");
+            diff[0].forEach((column, index) => {
+              const data = document.createElement("td");
+              const text = diff[1] ? `${column} -> ${diff[1][index]}` : column;
+              data.appendChild(document.createTextNode(text));
+              row.appendChild(data);
+            });
+            tblBody.appendChild(row);
+          });
+          tbl.appendChild(tblBody);
+          diffElement.appendChild(tbl);
+        });
+      };
 
-    const downloadCsv = (fileName, csvString) => {
-      const htmlAnchorElement = document.createElement('a');
-      htmlAnchorElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
-      htmlAnchorElement.target = '_blank';
-      htmlAnchorElement.download = `${fileName}.csv`;
-      htmlAnchorElement.click();
-    }
+      const downloadCsv = ([fileName, csvString]) => {
+        const htmlAnchorElement = document.createElement('a');
+        htmlAnchorElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
+        htmlAnchorElement.target = '_blank';
+        htmlAnchorElement.download = `${fileName}.csv`;
+        htmlAnchorElement.click();
+      };
+
+      google.script.run.withSuccessHandler(drawDifference).getDifference();
+      // google.script.run.withSuccessHandler(csvs => csvs.forEach(downloadCsv)).executeGeneration();
+    })();
   </script>
 </head>
 <body>
-
+  <div id="diff"></div>
 </body>
 </html>

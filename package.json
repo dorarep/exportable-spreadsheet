@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "push": "clasp push",
+    "deploy": "clasp push; clasp open",
     "lint": "eslint src/**/*.ts",
     "fix": "yarn lint --fix"
   },
