@@ -12,6 +12,11 @@ const tap = func => value => {
   return value;
 };
 
+const log = value => {
+  console.log(JSON.stringify(value));
+  return value;
+};
+
 // ======================
 
 const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -34,15 +39,13 @@ const groupByBaseName = (sheets: Sheet[]) => sheets.reduce((carry, currentSheet)
   return carry;
 }, {});
 
-const selectBaseSheets = (sheets: Sheet[]) => flatten(sheets.map(sheet => isTemp(sheet) ? [] : [sheet]));
-
 // =====================
 
 const convertSheetsToCsv = (sheets: Sheet[]) =>
   sheets.map(convertSheetToCsv);
 
 const convertSheetToCsv = (sheet: Sheet) =>
-  [sheet.getName(), run(getMatrix(sheet), convertMatrixToCsv)];
+  [sheet.getName(), convertMatrixToCsv(getMatrix(sheet))];
 
 const convertMatrixToCsv = (matrix: any[][]) =>
   matrix.map(row => row.join(',')).join('\r\n');
@@ -60,9 +63,14 @@ const generateTempSheet = (sheet: Sheet) => {
 
 const generateTempSheets = (sheets: Sheet[]) => sheets.map(generateTempSheet);
 
-// =====================
-
-const deleteTempSheets = (sheets: Sheet[]) => sheets.forEach(sheet => isTemp(sheet) && spreadsheet.deleteSheet(sheet));
+const deleteTempSheets = (sheets: Sheet[]) => flatten(sheets.map(sheet => {
+  if (isTemp(sheet)) {
+    spreadsheet.deleteSheet(sheet);
+    return [];
+  } else {
+    return [sheet];
+  }
+}));
 
 // ======================
 
@@ -89,9 +97,8 @@ function getDifference() {
 
 function executeGeneration() {
   return run(
-    tap(deleteTempSheets),
+    deleteTempSheets,
     tap(generateTempSheets),
-    selectBaseSheets,
     convertSheetsToCsv
   )(currentSheets());
 }
