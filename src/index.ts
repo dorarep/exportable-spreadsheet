@@ -34,6 +34,8 @@ const groupByBaseName = (sheets: Sheet[]) => sheets.reduce((carry, currentSheet)
   return carry;
 }, {});
 
+const selectBaseSheets = (sheets: Sheet[]) => flatten(sheets.map(sheet => isTemp(sheet) ? [] : [sheet]));
+
 // =====================
 
 const convertSheetsToCsv = (sheets: Sheet[]) =>
@@ -89,6 +91,7 @@ function executeGeneration() {
   return run(
     tap(deleteTempSheets),
     tap(generateTempSheets),
+    selectBaseSheets,
     convertSheetsToCsv
   )(currentSheets());
 }
